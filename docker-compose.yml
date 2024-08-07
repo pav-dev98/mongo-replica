@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  mongo-primary:
+    image: mongo
+    container_name: mongo-primary
+    ports:
+      - "27017:27017"
+    networks:
+      - mongo-cluster
+    volumes:
+      - mongo-primary:/data/db
+    command: mongod --replSet rs0 --bind_ip localhost,mongo-primary
+
+  mongo-secondary:
+    image: mongo
+    container_name: mongo-secondary
+    networks:
+      - mongo-cluster
+    volumes:
+      - mongo-secondary:/data/db
+    command: mongod --replSet rs0 --bind_ip localhost,mongo-secondary
+
+  mongo-arbiter:
+    image: mongo
+    container_name: mongo-arbiter
+    networks:
+      - mongo-cluster
+    command: mongod --replSet rs0 --bind_ip localhost,mongo-arbiter
+
+networks:
+  mongo-cluster:
+    driver: bridge
+
+volumes:
+  mongo-primary:
+  mongo-secondary:
+  mongo-arbiter:

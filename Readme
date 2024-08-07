@@ -1,0 +1,34 @@
+# Título del Proyecto
+
+replica de base de datos mongo db
+
+## Requisitos
+
+- Requisito 1: docker instalado
+- Requisito 2: docker-compose instalado 
+
+
+## Instalación
+
+1. Clona el repositorio.
+
+## Uso
+navega al directorio cd mongodb-replica
+ejecuta en la terminal: docker-compose up -d 
+
+## Configurar el contenedor primario
+docker exec -it mongo-primary mongosh
+pega el contenido del archivo init-replica-set.js
+## espera unos segundos y crea datos en el contenedor primary con los siguientes comandos
+use testDB // ingresamos a la base de datos testDB 
+
+db.testCollection.insertMany([{name:"documento1",value:100},{name:"documento2",value:200}]) // se crea datos en la coleccion testCollection
+
+db.testCollection.find().pretty() // listamos la coleccion testCollection
+
+exit // para salir del contenedor primario
+## verificamos la creacion de los dato en la replica osea en el contenedor secundario
+docker exec -it mongo-secondary mongosh // ingresamos al contenedor secundario
+use testDB // para ir a la base de datos 
+db.testCollection.find().readPref('secondary').pretty() // para leer la collection como secundario aqui debe aparecer los datos que se crearon en el contenedor primario.
+
